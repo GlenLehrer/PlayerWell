@@ -1,0 +1,291 @@
+﻿
+@model IEnumerable<AgileTeamFour.BL.Models.Post>
+
+@{
+    ViewData["Title"] = "Posts";
+}
+
+<div class="activity-feed">
+    <p>
+        <a asp-action="CreateC" class="create-post-link">Create a New Post</a>
+    </p>
+    @foreach (var item in Model)
+    {
+        <div class="post-card">
+            <div class="user-info">
+                <img class="avatar"
+                     alt="UserName's Avatar"
+                     src="@Url.Content("~/images/" + item.IconPic)"
+                     onclick="on('@Url.Content("~/images/" + item.IconPic)')" />
+                <a asp-controller="User"
+                   asp-action="Details"
+                   asp-route-id="@item.AuthorID"
+                   class="username">@item.UserName &nbsp</a>
+                <span class="time-posted">@item.TimePosted</span>
+            </div>
+
+
+            <p class="post-content">@item.Text</p>
+
+            <div class="rank-info">
+                <div class="rating">
+                    <div class="summary">
+                        <span>What do others think about this user? </span>
+                        <br />
+                        Rating:
+                        <span class="review-stars">
+                            @for (var i = 1; i <= 5; i++)
+                            {
+                                var averageStars = item.AverageStarsOutOf5.GetValueOrDefault(); // Get value or 0 if null
+
+                                if (i <= Math.Floor(averageStars))
+                                {
+                                    <span class="fa fa-star checked"></span>
+                                }
+                                else if (i == Math.Ceiling(averageStars) && averageStars % 1 != 0)
+                                {
+                                    <span class="fa fa-star-half-alt checked"></span>
+                                }
+                                else
+                                {
+                                    <span class="fa fa-star unchecked"></span>
+                                }
+                            }
+                        </span>
+                        <br />
+                        <span class="review-summary">@item.ReviewSummary</span>
+                    </div>
+                </div>
+            </div>
+            <div class="like-section">
+                <button id="like-button-@item.PostID" class="like-button" onclick="toggleLike(@item.PostID)">
+    <i id="like-icon-@item.PostID" class="fas fa-thumbs-up"></i>
+    Like
+</button>
+                <button class="show-likes-button" onclick="showLikes(@item.PostID)">
+                    Show Likes
+                </button>
+                <div id="likes-modal-@item.PostID" class="likes-modal" style="display:none;">
+                    <div class="modal-content">
+                        <span class="close-button" onclick="closeLikes(@item.PostID)">&times;</span>
+                        <p>Users who liked this post:</p>
+                        <ul id="likes-list-@item.PostID"></ul>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="comment-section-@item.PostID" class="comment-section">
+              
+
+                <form asp-action="Create" method="post">
+                    <input type="hidden" name="PostID" value="@item.PostID" />
+                    <input type="hidden" name="ParentCommentID" value="" />
+                    <textarea name="Text" placeholder="Write a comment..."></textarea>
+                    <button type="submit">Post</button>
+                </form>
+
+
+                <!-- Render comments using the partial view -->
+                <div class="comments-list">
+                    @if (item.Comments != null && item.Comments.Any())
+                    {
+                        @foreach (var comment in item.Comments)
+                        {
+                            @await Html.PartialAsync("_PostCommentPartial", comment)
+                        }
+                    }
+                </div>
+            </div>
+  
+        </div>
+    }
+</div>
+
+<script>
+
+   
+
+
+    function toggleCommentSection(postId,autorID) {
+        var commentSection = document.getElementById('comment-section-' + postId);
+        commentSection.style.display = (commentSection.style.display === 'none') ? 'block' : 'none';
+    }
+
+    function submitComment(postId) {
+        var commentText = document.querySelector('#comment-section-' + postId + ' .Text').value;
+       
+        if (!commentText.trim()) {
+            alert("Comment cannot be empty!");
+            return;
+        }
+        
+        var commentData = {
+            PostID: postId,
+            Text: commentText
+        };
+
+        
+        fetch('/PostComment/Create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(commentData),
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json(); 
+                } else {
+                    throw new Error("Failed to submit the comment.");
+                }
+            })
+            .then(data => {
+                console.log(data); 
+                const commentList = document.querySelector('#comment-section-' + postId + ' .Text');
+
+                // Append the new comment to the list
+                const newComment = document.createElement('div');
+                newComment.classList.add('comment-item');
+                newComment.innerHTML = `
+               <div class="comment-header">
+        <img class="comment-avatar" src="/images/${data.AuthorAvatarPic}" alt="${data.UserName}'s Avatar" />
+        <span class="comment-author">${data.UserName}</span>
+        <span class="comment-time">${new Date(data.TimePosted).toLocaleString()}</span>
+    </div>
+
+            <p class="comment-text">${data.Text}</p>
+        `;
+                commentList.appendChild(newComment);
+
+                // Clear the input field
+                document.querySelector('#comment-section-' + postId + ' .comment-input').value = '';
+            });
+
+    }
+
+
+    function showReplyForm(commentId) {
+        var replyForm = document.getElementById('reply-form-' + commentId);
+        replyForm.style.display = 'block';
+    }
+
+    function submitReply(postId, parentCommentId) {
+        var replyText = document.querySelector('#reply-form-' + parentCommentId + ' .reply-input').value;
+
+        if (!replyText.trim()) {
+            alert("Reply cannot be empty!");
+            return;
+        }
+
+        var replyData = {
+            PostID: postId,
+            ParentCommentID: parentCommentId,
+            Text: replyText
+        };
+
+        // AJAX request to submit the reply
+        fetch('/PostComment/CreateReply', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(replyData),
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json(); 
+                } else {
+                    throw new Error("Failed to submit the reply.");
+                }
+            })
+            .then(data => {
+                
+                const replyList = document.querySelector('#replies-list-' + parentCommentId);
+
+                // Append the new reply to the list
+                const newReply = document.createElement('div');
+                newReply.classList.add('reply-item');
+                newReply.innerHTML = `
+                    <div class="reply-header">
+                        <img class="reply-avatar" src="/images/${data.AuthorAvatarPic}" alt="${data.UserName}'s Avatar" />
+                        <span class="reply-author">${data.UserName}</span>
+                        <span class="reply-time">${data.TimePosted}</span>
+                    </div>
+                    <p class="reply-text">${data.Text}</p>
+                `;
+                replyList.appendChild(newReply);
+
+                // Clear the input field
+                document.querySelector('#reply-form-' + parentCommentId + ' .reply-input').value = '';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Failed to submit the reply. Please try again.");
+            });
+    }
+
+    function toggleLike(postId) {
+        fetch('/Post/ToggleLike', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ postId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    alert(data.error); 
+                    return;
+                }
+
+
+                const likeButton = document.getElementById(`like-button-${postId}`);
+                if (likeButton) {
+                    if (data.isLiked) {
+                        likeButton.classList.add("liked");
+                        likeButton.innerHTML = `<i class="fas fa-thumbs-down"></i> Unlike`; 
+                    } else {
+                        likeButton.classList.remove("liked");
+                        likeButton.innerHTML = `<i class="fas fa-thumbs-up"></i> Like`; 
+                    }
+                }
+                // Call the function to show likes
+                showLikes(postId);
+
+            })
+            .catch(error => console.error("Error:", error));
+    }
+
+
+    function showLikes(postId) {
+        fetch(`/Post/GetLikes?postId=${postId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); 
+            })
+            .then(likes => {
+                const likesList = document.getElementById(`likes-list-${postId}`);
+                likesList.innerHTML = likes.map(user => `<li>${user}</li>`).join("");
+                document.getElementById(`likes-modal-${postId}`).style.display = "block";
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Failed to load likes. Please try again later.");
+            });
+    }
+
+
+function closeLikes(postId) {
+    document.getElementById(`likes-modal-${postId}`).style.display = "none"; 
+}
+
+
+
+</script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+

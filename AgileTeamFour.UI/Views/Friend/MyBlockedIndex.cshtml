@@ -1,0 +1,58 @@
+﻿@model IEnumerable<AgileTeamFour.UI.ViewModels.FriendVM>
+
+@{
+    ViewData["Title"] = "Blocked List";
+}
+
+<h1 class="text-center">Blocked</h1>
+<p class="text-center">
+    <a class="btn btn-primary btn-lg ml-3" asp-action="CreateBlock" data-toggle="modal" data-target="#createPostModal">Block New User</a>
+</p>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th> UserName</th>
+
+            <th> Status</th>
+            
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+
+                
+                    @foreach (var friend in item.MyFriends)
+                    {
+                    <td>
+                        <img class="profile-photo" src="~/images/@(friend.IconPic)"
+                             id="programimage"
+                             alt="@friend.IconPic"
+                             onclick="on('/images/@(friend.IconPic)')"
+                             class="imagepropsmall" />
+                    </td>
+                    <td>
+                        <span>@friend.UserName</span>
+
+                        <br />
+                    </td>
+                    }
+                
+             <td>
+                @Html.DisplayFor(modelItem => item.Friend.Status)
+            </td> 
+            
+                <td>
+                    <form asp-action="RejectRequest" method="post" style="display:inline;">
+                        <input type="hidden" name="friendId" value="@item.Friend.ID" />
+                        <button type="submit">Unblock</button>
+                    </form>
+                </td>
+            
+        </tr>
+}
+    </tbody>
+</table>

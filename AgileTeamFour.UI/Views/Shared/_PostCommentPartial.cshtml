@@ -1,0 +1,38 @@
+﻿
+ @model AgileTeamFour.BL.Models.PostComment
+
+<div class="comment">
+    <div class="comment-header">
+        <img class="avatar"
+             alt="UserName's Avatar"
+             src="@Url.Content("~/images/" + @Model.IconPic)"
+             onclick="on('@Url.Content("~/images/" + @Model.IconPic)')" />
+        <a asp-controller="User"
+           asp-action="Details"
+           class="username">@Model.UserName &nbsp</a>
+        <span class="time-posted">@Model.TimePosted</span>
+        <p class="replay-text">@Model.Text</p>
+
+        <form method="post" action="/Post/DeleteReply">
+            <input type="hidden" name="replyId" value="@Model.CommentID" />
+            <button type="submit" class="delete-reply-button">Delete</button>
+        </form>
+
+    </div>
+
+    <div class="replies">
+        @foreach (var reply in Model.Replies)
+        {
+            @await Html.PartialAsync("_PostCommentPartial", reply)
+        }
+    </div>
+
+    <!-- Reply Form -->
+    <form asp-action="Create" method="post">
+        <input type="hidden" name="PostID" value="@Model.PostID" />
+        <input type="hidden" name="ParentCommentID" value="@Model.CommentID" />
+        <textarea name="Text" placeholder="Reply..."></textarea>
+        <button type="submit">Reply</button>
+    </form>
+</div>
+ 

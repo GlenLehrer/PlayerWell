@@ -1,0 +1,50 @@
+﻿@model AgileTeamFour.UI.ViewModels.EventDetailsVM
+
+@{
+    ViewData["Title"] = "Delete";
+}
+<div class="container mt-2 p-4" style="border-radius: 10px;">
+    <h1 class="text-danger">Delete Event</h1>
+
+    <h3 class="alert alert-warning p-3 rounded">Are you sure you want to delete <strong>@Model.Event.EventName</strong>?</h3>
+    <hr class="mb-4" />
+
+    <dl class="row mb-4">
+        <!--<dt class="col-sm-3 font-weight-bold">Event ID</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Event.EventID)</dd>-->
+
+        <dt class="col-sm-3 font-weight-bold">Game Name</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Game.GameName)</dd>
+
+        <dt class="col-sm-3 font-weight-bold">Event Name</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Event.EventName)</dd>
+
+        <dt class="col-sm-3 font-weight-bold">Server</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Event.Server)</dd>
+
+        <dt class="col-sm-3 font-weight-bold">Max Players</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Event.MaxPlayers)</dd>
+
+        <dt class="col-sm-3 font-weight-bold">Type</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Event.Type)</dd>
+
+        <dt class="col-sm-3 font-weight-bold">Platform</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Event.Platform)</dd>
+
+        <dt class="col-sm-3 font-weight-bold">Description</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Event.Description)</dd>
+
+        <dt class="col-sm-3 font-weight-bold">Date/Time</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Event.DateTime)</dd>
+
+        <dt class="col-sm-3 font-weight-bold">Event Creator</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.AuthorName)</dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <div class="form-group">
+            <input type="submit" value="Delete" class="btn btn-danger btn-lg" />
+            <a asp-action="Index" class="btn btn-secondary btn-lg ml-3">Back to List</a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,86 @@
+﻿@model IEnumerable<AgileTeamFour.BL.Models.User>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h1>All Users</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IconPic)
+            </th>
+           
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.DateOfBirth)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+                <td>
+                    <img src="~/images/@(item.IconPic)"
+                         id="programimage"
+                         alt="@item.IconPic"
+                         onclick="on('/images/@(item.IconPic)')"
+                         class="imagepropsmall" />
+                </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td> 
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+            <td>
+                
+                    <a asp-action="Details2" asp-route-id="@item.UserID" class="btn btn-primary btn">Details</a>
+                    <a asp-action="Edit" asp-route-id="@item.UserID" class="btn btn-secondary btn">Edit</a>
+                    @if (@item.AccessLevel.ToLower() == "deactivated")
+                    {
+                        bool makeActive = true;
+                        <a asp-action="Deactivate" asp-route-id="@item.UserID" asp-route-makeactive=@makeActive class="btn btn-danger btn">Reactivate</a>
+                    }
+                    @if (@item.AccessLevel.ToLower() != "deactivated")
+                    {
+                        bool makeActive = false;
+                        <a asp-action="Deactivate" asp-route-id="@item.UserID" asp-route-makeactive=@makeActive class="btn btn-danger btn">Deactivate</a>
+                    }
+                    
+                
+            </td>
+        </tr>
+}
+    </tbody>
+
+
+  
+
+
+
+
+</table>

@@ -1,0 +1,86 @@
+﻿@model AgileTeamFour.UI.ViewModels.UserProfileVM;
+@{
+    ViewData["Title"] = @Model.CurrentUser.UserName;
+}
+<h1>@Model.CurrentUser.UserName's Profile</h1>
+
+<div class="profile-section">
+    <img class="profile-photo" src="~/images/@Model.CurrentUser.IconPic" alt="Profile Photo">
+    <div class="profile-info">
+        <div>@Model.CurrentUser.Bio.</div>
+        <div><strong>Friends: </strong> @Model.Friends.Count()</div> <!-- Total Friends -->
+        <div><strong>Reviews: </strong> @Model.Reviews.Count()</div> <!-- Total Reviews -->
+        <div><strong>Review Level: </strong> @Model.ReviewLevel</div> <!-- Review Level Based on Score -->
+        <div class="question-mark" onclick="showBubble(event)"> What is a Review Level ?</div>
+        <div id="bubble" class="bubble">
+            The review level system evaluates players based on peer reviews,
+            assigning points for each star rating. These points are summed to calculate a total score,
+            which determines the player's level.
+            Levels range from negative to positive, reflecting overall performance and feedback.
+        </div>
+        <button id="friend-button" style="display: none;">Add Friend</button>
+        <button id="unfriend-button" style="display: none;">Unfriend</button>
+    </div>
+</div>
+
+<div class="user-reviews">
+    <h2>Reviews</h2>
+    @if (Model.Reviews.Any())
+    {
+        <ul class="review-list">
+            @foreach (var review in Model.Reviews)
+            {
+                <div class="review-container">
+                    <!-- Total Stars -->
+                    <p>
+                        @for (int i = 0; i < review.StarsOutOf5; i++)
+                        {
+                            <img src="~/images/star.png" alt="star" class="star-icon" />
+                        }
+                    </p>
+                    <!-- Review Text Section -->
+                    <div class="review-content">
+                        <p>
+                            @Html.DisplayFor(modelItem => review.ReviewText)
+                        </p>
+                    </div>
+
+                    <!-- How Long ago the Review Was -->
+                    <div class="review-footer">
+                        <p>@((DateTime.Now - review.DateTime).Days) days ago </p>
+                    </div>
+                </div>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No reviews available</p>
+    }
+</div>
+@if (TempData["UserID"] == null || Model.CurrentUser.UserID == (int)TempData["UserID"])
+{
+    <div class="user-actions">
+        @Html.ActionLink("Edit", "Edit2", new { id = Model.CurrentUser.UserID }) |
+        <a asp-action="Index">View All Players</a>
+    </div>
+}
+<div class="user-actions">
+    <a asp-action="Index">View All Players</a>
+</div>
+
+<script>
+    document.addEventListener('click', function (event) {
+        var bubble = document.getElementById('bubble');
+        var questionMark = document.querySelector('.question-mark');
+
+        if (questionMark.contains(event.target)) {
+            bubble.style.display = 'block';
+            bubble.style.top = event.clientY + 'px';
+            bubble.style.left = (event.clientX + 100) + 'px';
+        } else {
+            bubble.style.display = 'none';
+        }
+    });
+</script>
+

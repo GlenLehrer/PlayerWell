@@ -1,0 +1,74 @@
+﻿@model AgileTeamFour.UI.ViewModels.EventVM
+
+@{
+    ViewData["Title"] = "Edit " + @Model.Event.EventName;
+}
+
+<h1>Edit @Model.Event.EventName</h1>
+
+<h4>Events</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" asp-controller="Event" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input asp-for="Event.EventID" type="hidden" />
+                <span asp-validation-for="Event.EventID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Event.GameID" class="control-label"></label>
+                <input asp-for="Event.GameID" class="form-control" readonly/>
+                <span asp-validation-for="Event.GameID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Event.EventName" class="control-label"></label>
+                <input asp-for="Event.EventName" class="form-control" />
+                <span asp-validation-for="Event.EventName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Event.Server" class="control-label"></label>
+                <input asp-for="Event.Server" class="form-control" />
+                <span asp-validation-for="Event.Server" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Event.MaxPlayers" class="control-label"></label>
+                <input asp-for="Event.MaxPlayers" class="form-control" />
+                <span asp-validation-for="Event.MaxPlayers" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Event.Type" class="control-label"></label>
+                <input asp-for="Event.Type" class="form-control" />
+                <span asp-validation-for="Event.Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Event.Platform" class="control-label"></label>
+                <input asp-for="Event.Platform" class="form-control" />
+                <span asp-validation-for="Event.Platform" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Event.Description" class="control-label"></label>
+                <input asp-for="Event.Description" class="form-control" />
+                <span asp-validation-for="Event.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Event.DateTime" class="control-label"></label>
+                <input asp-for="Event.DateTime" class="form-control" />
+                <span asp-validation-for="Event.DateTime" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<br />
+<div>
+    <a class="btn btn-secondary btn-lg ml-3" asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

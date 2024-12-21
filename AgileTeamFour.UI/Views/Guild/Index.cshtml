@@ -1,0 +1,52 @@
+﻿@model IEnumerable<AgileTeamFour.UI.ViewModels.GuildDetailsVM>
+
+@{
+    ViewData["Title"] = "Guilds";
+}
+
+<h1 class="text-center">Guild List</h1>
+
+<p class="text-center">
+    <a class="btn btn-primary btn-lg ml-3" asp-action="Create">Create New</a>
+
+   
+</p>
+<button type="button" class="btn btn-info" data-bs-toggle="popover" data-bs-content="A Guild is a group of people that play together! You can join one, or make your own and invite your friends!" aria-describedby="popover153918">What's a Guild?</button>
+
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Guild.GuildName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Guild.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LeaderName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Guild.GuildName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Guild.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.UserName)
+            </td>
+            <td>
+               @*  <a asp-action="Edit" class="btn btn-light" asp-route-id="@item.Guild.GuildId">Edit</a> | *@
+                <a asp-action="Details" class="btn btn-playerwell text-white" asp-route-id="@item.Guild.GuildId">Guild Page</a>
+                @* <a asp-action="Delete" asp-route-id="@item.Guild.GuildId">Delete</a> *@
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,51 @@
+﻿@model IEnumerable<AgileTeamFour.UI.ViewModels.FriendVM>
+
+@{
+    ViewData["Title"] = "All Requests";
+}
+
+<h1>My Friends</h1>
+
+<p>
+    <a class="btn btn-playerwell ml-3" asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                Users
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Friend.Status)
+            </th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @foreach (var friend in item.MyFriends)
+                {
+                    <td>
+                        <img src="~/images/@(friend.IconPic)"
+                             id=""
+                             alt="@friend.IconPic"
+                             onclick="on('/images/@(friend.IconPic)')"
+                             class="imagepropsmall rounded-circle" />
+                    </td>
+
+                    <td>
+                        <span>@friend.UserName</span>
+
+                        <br />
+                    </td>
+                }
+                <td>
+                    @item.Friend.Status
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

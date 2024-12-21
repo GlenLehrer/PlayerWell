@@ -1,0 +1,86 @@
+﻿@model IEnumerable<AgileTeamFour.UI.ViewModels.EventDetailsVM>
+
+@{
+    ViewData["Title"] = "EventsForGame";
+    var backgroundImage = Model.First().Game.Picture;
+}
+<div class="background-container rounded" style="background-image: url('@backgroundImage'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <div class="container text-white">
+<h1 class="text-center EFG">Events For @Model.First().Game.GameName</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Create New</a>
+</p>
+<div class="table-responsive">
+<table class="table">
+    <thead>
+        <tr>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.Game.GameName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Event.EventName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Event.Server)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Event.MaxPlayers)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Event.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Event.Platform)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Event.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Event.DateTime)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Game.GameName)
+                </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Event.EventName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Event.Server)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Event.MaxPlayers)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Event.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Event.Platform)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Event.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Event.DateTime)
+            </td>
+            <td>
+                
+                <a asp-action="Details" class="btn btn-playerwell" asp-route-id="@item.Event.EventID">Event Page</a> 
+                
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+        </div>
+</div>
+</div>
